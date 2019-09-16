@@ -8,7 +8,6 @@ exports.addProduct = async (req, res, next) => {
         price: price,
         spec: spec
     })
-    console.log(product)
     const validProd = await  product.addProduct()
     console.log(validProd)
     if(validProd == true){

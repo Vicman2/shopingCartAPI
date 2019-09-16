@@ -1,6 +1,7 @@
 const JWT = require('jsonwebtoken');
 
 const UserModel = require("../model/userModel")
+const ProductModel = require("../model/productModel").model;
 
 
 
@@ -44,7 +45,6 @@ exports.addToCart = async (req, res, next) => {
         const {token} = req.headers;
         const verifiedToken = JWT.verify(token, 'Avic')
         const email = verifiedToken.email
-        console.log(email)
         const messageObject  = await UserModel.addToCart(title, email);
         if(messageObject.message == 'Invalid Product!') return res.status(404).send({success: false, message: "Invalid products"});
         if(messageObject.message == 'Invalid User') return res.status(404).send({success: false, message: "Invalid User"});
@@ -79,5 +79,16 @@ exports.viewProducts = async (req, res, next)=>{
         return res.status(404).send({success: false, message: "No product in the database"});
     }catch(err){
         console.log(err)
+    }
+}
+
+exports.searchProduct = async (req, res, next) => {
+    try{
+        const {productToSearch} = req.body
+        const searchResult = await  ProductModel.searchProduct(productToSearch);
+        if(!searchResult || searchResult.length < 1 ) return res.status(404).send({success: true, message: "No product found"})
+        return res.status(404).send({success: true, products: searchResult});
+    }catch(err){
+        console.log(err);
     }
 }

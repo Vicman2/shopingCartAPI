@@ -54,5 +54,17 @@ productSchema.statics.deleteProduct = async function(productTitle){
 }
 
 
+productSchema.statics.searchProduct = async function(productToSearch){
+    const regex = new RegExp(".*" + productToSearch + ".*", "gi")
+    try{
+        const products = await this.model('Product').find({title: regex}).select("-_id");
+        if(!products) return false;
+        return products;
+    }catch(err){
+        console.log(err);
+    }
+}
+
+
 
 module.exports = mongoose.model('Product', productSchema);
