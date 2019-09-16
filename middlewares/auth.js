@@ -4,6 +4,7 @@ const UserModel = require('../model/userModel')
 exports.authentication = async (req, res, next)=> {
     try{
         const {token} = req.headers
+        if(!token) return res.status.send("No authentication certificate");
         const valueOfToken =   JWT.verify(token, 'Avic')
         if(!valueOfToken) return res.status(404).send({success: false, message : "Invalid User"})
         const validUser = UserModel.find({email: valueOfToken.email})

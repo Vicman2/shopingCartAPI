@@ -118,4 +118,5 @@ userSchema.statics.getProducts = async function(){
     }
 }
 
+
 module.exports = mongoose.model('User', userSchema);

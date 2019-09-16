@@ -29,6 +29,30 @@ productSchema.methods.addProduct = async function(){
     }
 }
 
+productSchema.methods.editProduct = async function(productTitle){
+    try{
+        const existing = await this.model('Product').findOne({title: productTitle});
+        if(!existing) return false;
+        existing.title = this.title;
+        existing.price = this.price;
+        existing.spec = this.spec;
+        await existing.save();
+        return true;
+    }catch(err){
+        console.log(err);
+    }
+}
+productSchema.statics.deleteProduct = async function(productTitle){
+    try{
+        const existing = await this.model('Product').findOne({title: productTitle});
+        if(!existing) return false;
+        await this.deleteOne();
+        return true;
+    }catch(err){
+        console.log(err);
+    }
+}
+
 
 
 module.exports = mongoose.model('Product', productSchema);
