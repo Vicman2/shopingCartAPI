@@ -110,7 +110,7 @@ userSchema.statics.getCart = async function(email){
 
 userSchema.statics.getProducts = async function(){
     try{
-        const products = await ProductModel.find().select("title price spec -_id");
+        const products= await ProductModel.find().select("title price spec -_id");
         if(products) return products;
         return false
     }catch(err){

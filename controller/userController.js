@@ -1,7 +1,16 @@
 const JWT = require('jsonwebtoken');
+const nodeMialer = require('nodemailer');
+const sendGridTransport = require('nodemailer-sendgrid-transport');
 
 const UserModel = require("../model/userModel")
 const ProductModel = require("../model/productModel").model;
+
+
+const transporter = nodeMialer.createTransport(sendGridTransport({
+    auth: {
+        api_key: "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"
+    }
+}))
 
 
 
@@ -17,12 +26,20 @@ exports.postSignIn = (req, res, next)=> {
     user.signIn()
         .then(value => {
             if(value){
-                
-                res.status(200).send({success : true, message: "User created successfully"})
+                return transporter.sendMail({
+                    to: email, 
+                    from: "ourExample.com", 
+                    subject: "Sign up succeeded", 
+                    html: "<h1> You have successfully signed In <h1>"
+                })
             }else{
-                res.status(404).send({success: false, message: "User already existed"})
+                return Promise.resolve(false)
             }
         })
+        .then(value  =>{
+            if(!value) return res.status(404).send({success : true, message: "User already exist"});
+            return res.status(200).send({success : true, message: "User created successfully"})
+        } )
         .catch(err => {
             console.log(err);
         })
