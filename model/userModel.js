@@ -14,7 +14,8 @@ const userSchema = new Schema({
     }, 
     email : {
         type: String, 
-        required: true
+        required: true, 
+        unique: true
     }, 
     phone: {
         type: String, 
@@ -37,7 +38,7 @@ const userSchema = new Schema({
             } 
         ]
     }
-})
+}, {timestamps: true});
 
 userSchema.methods.signIn = async function(){
     const existingUser =await  this.model("User").findOne({email: this.email});
@@ -118,5 +119,26 @@ userSchema.statics.getProducts = async function(){
     }
 }
 
+userSchema.statics.getByEmail = async function(email){
+    try {
+        const isUser = await  this.model('User').findOne({email: email});
+        if(isUser) return true 
+        return false
+    } catch (err) {
+        console.log(err);
+    }
+}
+userSchema.statics.updatePassword = async function(email, password){
+    try{
+        const isUser = await  this.model('User').findOne({email:email});
+        if(!email) return false
+        const hashedPassword = await bcrypt.hash(password, 12);
+        isUser.password = hashedPassword;
+        await isUser.save()
+        return true
+    }catch(err){
+        console.log(err)
+    }
+}
 
 module.exports = mongoose.model('User', userSchema);

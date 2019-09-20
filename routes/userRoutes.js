@@ -20,7 +20,11 @@ router.post("/login",  userController.postLogIn);
 router.post("/add-to-cart",auth.authentication, userController.addToCart);
 router.get("/viewCart",auth.authentication, userController.viewCart);
 router.get('/products', auth.authentication, userController.viewProducts)
-router.post('/search-product', userController.searchProduct)
+router.post('/search-product', userController.searchProduct);
+router.post('/reset-password', validation.validteEmailOnly, userController.postResetPassword);
+router.get('/reset-password-verify/:token',validation.getResetPasswordFromEmail,  userController.getResetPasswordFromEmail);
+router.post('/password-reset', validation.validatePasswords, userController.putUpdatedPassword);
+
 
 
 
